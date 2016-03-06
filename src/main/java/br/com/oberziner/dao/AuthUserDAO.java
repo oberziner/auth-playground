@@ -3,49 +3,34 @@ package br.com.oberziner.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import br.com.oberziner.entity.AuthUser;
-import br.com.oberziner.jpa.JPAUtil;
 
-public class AuthUserDAO extends AbstractDAO {
+public class AuthUserDAO {
 
-	private static final long serialVersionUID = 7870614140424308272L;
+	@PersistenceContext
+	EntityManager em;
 
-	public static void save(AuthUser User) {
-		AbstractDAO.save(User);
+	public void save(AuthUser User) {
+		em.merge(User);
 	}
 
-	public static void update(AuthUser User) {
-		AbstractDAO.update(User);
+	public void update(AuthUser user) {
+		em.merge(user);
 	}
 
-	public static void remove(AuthUser User) {
-		AbstractDAO.remove(AuthUser.class, User.getId());
-	}
-
-	public static AuthUser getUser(int UserID) {
-		EntityManager sessao = JPAUtil.newEntityManager();
-		try {
-			return sessao.find(AuthUser.class, UserID);
-		} catch (Exception e) {
-			System.out.println("Erro getUser: " + e.getMessage());
-			throw e;
-		} finally {
-			sessao.close();
-		}
+	public AuthUser getUser(int UserID) {
+		return em.find(AuthUser.class, UserID);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<AuthUser> getAllUsers() {
-		EntityManager sessao = JPAUtil.newEntityManager();
-		try {
-			return sessao.createQuery("Select t from " + AuthUser.class.getSimpleName() + " t").getResultList();
+	public List<AuthUser> getAllUsers() {
+		return em.createQuery("Select t from " + AuthUser.class.getSimpleName() + " t").getResultList();
+	}
 
-		} catch (Exception e) {
-			System.out.println("Erro getAllUsers: " + e.getMessage());
-			throw e;
-		} finally {
-			sessao.close();
-		}
+	public void removeWithId(Integer id) {
+		AuthUser toRemove = em.find(AuthUser.class, id);
+		em.remove(toRemove);
 	}
 }

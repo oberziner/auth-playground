@@ -2,6 +2,8 @@ package br.com.oberziner.service;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -16,36 +18,40 @@ import br.com.oberziner.dao.AuthUserDAO;
 import br.com.oberziner.entity.AuthUser;
 
 @Path("user")
+@Stateless
 public class AuthUserService {
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void putUser(AuthUser user) {
-		AuthUserDAO.save(user);
+		dao.save(user);
 	}
 
+	@Inject
+	AuthUserDAO dao;
+	
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public AuthUser getUserInformation(@PathParam("id") Integer id) {
-		return AuthUserDAO.getUser(id);
+		return dao.getUser(id);
 	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<AuthUser> getAllUsers() {
-		return AuthUserDAO.getAllUsers();
+		return dao.getAllUsers();
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateUser(AuthUser user) {
-		AuthUserDAO.update(user);
+		dao.update(user);
 	}
 
 	@DELETE
 	@Path("{id}")
 	public void deleteUser(@PathParam("id") Integer id) {
-		AuthUserDAO.remove(AuthUserDAO.getUser(id));
+		dao.removeWithId(id);
 	}
 }
