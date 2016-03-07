@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.oberziner.dao.AuthUserDAO;
 import br.com.oberziner.entity.AuthUser;
 
-@Path("user")
+@Path("users")
 @Stateless
 public class AuthUserService {
 
