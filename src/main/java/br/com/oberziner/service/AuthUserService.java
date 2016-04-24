@@ -1,5 +1,6 @@
 package br.com.oberziner.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,14 +17,16 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.oberziner.dao.AuthUserDAO;
 import br.com.oberziner.entity.AuthUser;
+import br.com.oberziner.security.Encrypter;
 
 @Path("users")
 @Stateless
 public class AuthUserService {
 
-	@PUT
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void putUser(AuthUser user) {
+	public void putUser(AuthUser user) throws NoSuchAlgorithmException {
+		user.setPassword(Encrypter.encryptMD5(user.getPassword()));
 		dao.save(user);
 	}
 
@@ -43,9 +46,10 @@ public class AuthUserService {
 		return dao.getAllUsers();
 	}
 
-	@POST
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateUser(AuthUser user) {
+	public void updateUser(AuthUser user) throws NoSuchAlgorithmException {
+		user.setPassword(Encrypter.encryptMD5(user.getPassword()));
 		dao.update(user);
 	}
 
